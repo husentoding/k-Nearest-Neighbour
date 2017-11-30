@@ -99,7 +99,7 @@ def cekAkurasi(hasil, dataTest):
 			a+=1
 	return (a*1.0/len(hasil))*100
 
-def kfold(k, jum_row, knn):
+def kfold(k, jum_row, jum_knn):
 	#inisialisasi indeks fold 
 	kece= jum_row/k
 	test_index=[]
@@ -122,16 +122,24 @@ def kfold(k, jum_row, knn):
 				data_train= data_train+ content[j]
 		#KNN 3
 
-		hasil.append(knn(data_test, data_train, knn))
+		hasil.append(knn(data_test, data_train, jum_knn))
 
 		akurasi= cekAkurasi(hasil[0], data_test)
 		hasilakurasi.append(akurasi)
+	total=0
+	for i in range(len(hasilakurasi)):
+		total= total+hasilakurasi[i]
 
-	return hasilakurasi
+
+	return total/len(hasilakurasi)
 
 #main
-jum_k=1
-for i in range(10):
-	jum_k+=2
-	akurasi=kfold(8, 4000,jum_k)
+
+for i in range(2):
+	jum_k=1
+	jum_fold=(i+1)*4
+	for j in range(2):
+		jum_k+=2
+		akurasi=kfold(jum_fold, 4000,jum_k)
+		print("Akurasi ", i, j, " ", akurasi, " Jumlah Fold: ", jum_fold, " Jumlah kNN: ", jum_k)
 
