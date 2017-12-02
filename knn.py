@@ -72,11 +72,11 @@ def knn(datatest, datatraining, k):
 		hasil.append(satuknn(datatest[i], datatraining, k))
 	return hasil
 #bakal nge load a-1 jumlah data, a minimal =1, b>a
-def loadData(a,b):
+def loadData(a,b, sheet):
 	if a==0:
 		a=1
 	eksel= open_workbook('Dataset Tugas 3 AI 1718.xlsx')
-	data_kereta = eksel.sheets()[0]
+	data_kereta = eksel.sheets()[sheet]
 
 	jum_row= data_kereta.nrows	
 	jum_col= data_kereta.ncols
@@ -98,48 +98,22 @@ def cekAkurasi(hasil, dataTest):
 			a+=1
 	return (a*1.0/len(hasil))*100
 
-def kfold(k, jum_row, jum_knn):
-	#inisialisasi indeks fold 
-	kece= jum_row/k
-	test_index=[]
-	for i in range(0, k):
-		test_index.append(i*kece)
-	test_index.append(jum_row-1)
-	content=[]
-	#masukin data ke content
-	for i in range(len(test_index)-1):
-		content.append(loadData(test_index[i], test_index[i+1]))
-
-	#mulai kfold
-	data_train=[]
-	hasilakurasi=[]
-	hasil=[]
-	for i in range(len(content)):
-		hasil=[]
-		data_test= content[i]
-		for j in range(len(content)):
-			if(i!=j):
-				data_train= data_train+ content[j]
-		#KNN 3
-
-		hasil.append(knn(data_test, data_train, jum_knn))
-
-		akurasi= cekAkurasi(hasil[0], data_test)
-		hasilakurasi.append(akurasi)
-	total=0
-	for i in range(len(hasilakurasi)):
-		total= total+hasilakurasi[i]
-
-
-	return total/len(hasilakurasi)
-
 #main
 
-for i in range(2):
-	jum_k=1
-	jum_fold=(i+1)*4
-	for j in range(2):
-		jum_k+=2
-		akurasi=kfold(jum_fold, 4002,jum_k)
-		print("Akurasi ", i, j, " ", akurasi, " Jumlah Fold: ", jum_fold, " Jumlah kNN: ", jum_k)
+data_test= loadData(1,1001,1)
+data_train= loadData(1,4001,0)
+
+x=knn(data_test, data_train, 101)
+
+for i in range(len(x)):
+	print(x[i], "\n")
+
+
+# for i in range(2):
+# 	jum_k=1
+# 	jum_fold=(i+1)*4
+# 	for j in range(2):
+# 		jum_k+=2
+# 		akurasi=kfold(jum_fold, 4002,jum_k)
+# 		print("Akurasi ", i, j, " ", akurasi, " Jumlah Fold: ", jum_fold, " Jumlah kNN: ", jum_k)
 
